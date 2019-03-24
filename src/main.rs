@@ -3,8 +3,10 @@ extern crate log;
 extern crate env_logger as logger;
 
 use log::Level;
+use std::env;
 
 fn main() {
+    env::set_var("RUST_LOG", "info");
     logger::init();
 
     debug!("this is a debug {}", "message");
