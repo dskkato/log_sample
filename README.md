@@ -28,8 +28,6 @@ Rustの[log](https://crates.io/crates/log)crateに`info!`等のマクロが定�
 ## env\_logger ver.
 logの実装でどれを使えばいいのか分かりませんが、[crates.io](https://crates.io)によると[`env_logger`](https://docs.rs/env_logger/0.6.1/env_logger/)のダウンロード数が圧倒的に多いようです。
 
-### 参考記事
-[Rust：logでログ出力を行う](https://qiita.com/fujitayy/items/590145c0f4b4e7d06de7)
 
 ```Rust
 #[macro_use]
@@ -53,31 +51,32 @@ fn main() {
     }
 }
 ```
-実行ファイルの名前がmainとすると、次のような実行結果が得られます。デフォルトのログレベルは`Error`で、標準エラー出力に書き出されます。ソースコードの中で環境変数の`RUST_LOG`を`info`に設定しているため`error`と`info`は出力されますが、`debug`は何も出ませんね。
+
+
+実行ファイルの名前がmainとすると、次のような実行結果が得られます。`env_logger`のデフォルトログレベルは`Error`で、標準エラー出力に書き出されます。ソースコードの中で環境変数の`RUST_LOG`を`info`に設定しているため`error`と`info`は出力されますが、`debug`は何も出ませんね。
+
 ```
 $ ./main
 [2019-03-24T14:16:11Z ERROR log_sample] this is printed by default
 [2019-03-24T14:16:11Z INFO  log_sample] the answer was: 12
 ```
+
+### 参考記事
+[Rust：logでログ出力を行う](https://qiita.com/fujitayy/items/590145c0f4b4e7d06de7)
 
 ## simple\_logger ver.
-logの実装でどれを使えばいいのか分かりませんが、[crates.io](https://crates.io)によると[`env_logger`](https://docs.rs/env_logger/0.6.1/env_logger/)のダウンロード数が圧倒的に多いようです。
-
-### 参考記事
-[Rust：logでログ出力を行う](https://qiita.com/fujitayy/items/590145c0f4b4e7d06de7)
+crateの名前の通り、標準出力に書き出します
 
 ```Rust
 #[macro_use]
 extern crate log;
-extern crate env_logger as logger;
+extern crate simple_logger as logger;
 
 use log::Level;
-use std::env;
 
 fn main() {
-    env::set_var("RUST_LOG", "info");
-    // env::set_var("RUST_LOG", "trace");
-    logger::init();
+    // logger::init().unwrap();
+    logger::init_with_level(Level::Info).unwrap();
 
     debug!("this is a debug {}", "message");
     error!("this is printed by default");
@@ -88,9 +87,11 @@ fn main() {
     }
 }
 ```
-実行ファイルの名前がmainとすると、次のような実行結果が得られます。デフォルトのログレベルは`Error`で、標準エラー出力に書き出されます。ソースコードの中で環境変数の`RUST_LOG`を`info`に設定しているため`error`と`info`は出力されますが、`debug`は何も出ませんね。
+実行ファイルの名前がmainとすると、次のような実行結果が得られます。`simple_logger`のデフォルトログレベルはtraceですが、そのレベルは簡単に変更できるみたいです。多くのloggerの実装ではこのようなinit関数が用意されているとのことです。
+
 ```
 $ ./main
-[2019-03-24T14:16:11Z ERROR log_sample] this is printed by default
-[2019-03-24T14:16:11Z INFO  log_sample] the answer was: 12
+2019-03-24 23:32:48 ERROR [log_sample] this is printed by default
+2019-03-24 23:32:48 INFO  [log_sample] the answer was: 12
 ```
+
