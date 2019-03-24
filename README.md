@@ -1,13 +1,11 @@
-# Rustでのロギング
-
 Rustで使えるロガーを調べてみます。この記事ではいくつかある実装のうち、
-* env\logger
+* env\_logger
 * simple\_logger
 * stderrlog
 を動かしてみました。
 
 ## log crate
-Rustの[log](https://crates.io/crates/log)crateに`info!`等のマクロが定義されてますが、用途に応じてその実装を選べる作りになっているようです。
+Rustの[log crate](https://crates.io/crates/log)に`info!`等のマクロが定義されてますが、用途に応じてその実装を選べる作りになっているようです。
 
 ### log実装の一覧
 [Available loggin implementations](https://docs.rs/log/0.4.6/log/#available-logging-implementations)の転載です。
@@ -62,7 +60,7 @@ $ ./main
 ```
 
 ## simple\_logger
-crateの名前の通り、標準出力に書き出します
+crateの名前の通り、シンプルに標準出力に書き出します
 
 ```Rust
 #[macro_use]
@@ -127,7 +125,7 @@ $ ./main
 ERROR - this is printed by default
 INFO - the answer was: 12
 ```
-注意点としては、`stderrlog`のverbosityがログレベルに相当するのですが、`log`crateのLovelとは微妙にずれているので`verbosity(Level::Info as usize)`等とすると期待する結果とずれてしまいます。ソースコードで確認しといたほうが良さそうですね。
+注意点としては、`stderrlog`のverbosityがログレベルに相当するのですが、`log`crateのLovelとは微妙にずれているので`verbosity(Level::Info as usize)`等とすると期待する結果とずれてしまいました。ソースコードで確認しといたほうが良さそうですね。
 
 * [logのLevel](https://github.com/rust-lang-nursery/log/blob/v0.4.6/src/lib.rs#L330:L351)
 * [stderrlogのverbosity](https://github.com/cardoe/stderrlog-rs/blob/v0.4.1/src/lib.rs#L388:L400)
@@ -138,5 +136,3 @@ INFO - the answer was: 12
 * [Rust：logでログ出力を行う](https://qiita.com/fujitayy/items/590145c0f4b4e7d06de7)
 
 
-## 次回以降で
-[syslog](https://docs.rs/syslog/*/syslog/)も見ておきたい.
