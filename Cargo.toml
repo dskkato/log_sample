@@ -1,0 +1,10 @@
+[package]
+name = "log_sample"
+version = "0.1.0"
+authors = ["Daisuke Kato <kato.daisuke429@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+log = "0.4"
+env_logger = "0.6"
+simple_logger = "1.0"
