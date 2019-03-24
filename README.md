@@ -6,7 +6,7 @@ Rustでのログを表示させる方法をいくつか調べてみます。
 Rustの[log](https://crates.io/crates/log)crateに`info!`等のマクロが定義されてますが、用途に応じてその実装を選べる作りになっているようです。
 
 ### log実装
-[Available loggin implementations]( https://docs.rs/log/0.4.6/log/#available-logging-implementations)の転載です。
+[Available loggin implementations](https://docs.rs/log/0.4.6/log/#available-logging-implementations)の転載です。
 
 * Simple minimal loggers:
   * env\_logger
@@ -95,3 +95,39 @@ $ ./main
 2019-03-24 23:32:48 INFO  [log_sample] the answer was: 12
 ```
 
+## stderrlog
+
+もう一つくらい、[stderrlog](https://docs.rs/stderrlog/0.4.1/stderrlog/)試してみます。
+```Rust
+#[macro_use]
+extern crate log;
+extern crate stderrlog as logger;
+
+use log::Level;
+
+fn main() {
+    logger::new()
+        .module(module_path!())
+        .verbosity(2)
+        .init()
+        .unwrap();
+
+    debug!("this is a debug {}", "message");
+    error!("this is printed by default");
+
+    if log_enabled!(Level::Info) {
+        let x = 3 * 4; // expensive computation
+        info!("the answer was: {}", x);
+    }
+}
+```
+実行結果は次のようになります。タイムスタンプを入れたりもっと細かい設定もできますが、ここではサボっています。実行結果は次のようになります。
+```
+$ ./main
+ERROR - this is printed by default
+INFO - the answer was: 12
+```
+注意点としては、`stderrlog`のverbosityがログレベルに相当するのですが、`log`crateのLovelとは微妙にずれているので`verbosity(Level::Info as usize)`等とすると期待する結果とずれてしまいます。ソースコードで確認すると次の通りです。
+
+* [logのLevel](https://github.com/rust-lang-nursery/log/blob/v0.4.6/src/lib.rs#L330:L351)
+* [stderrlogのverbosity](https://github.com/cardoe/stderrlog-rs/blob/v0.4.1/src/lib.rs#L388:L400)

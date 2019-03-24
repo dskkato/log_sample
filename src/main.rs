@@ -1,11 +1,15 @@
 #[macro_use]
 extern crate log;
-extern crate simple_logger as logger;
+extern crate stderrlog as logger;
 
 use log::Level;
 
 fn main() {
-    logger::init().unwrap();
+    logger::new()
+        .module(module_path!())
+        .verbosity(2)
+        .init()
+        .unwrap();
 
     debug!("this is a debug {}", "message");
     error!("this is printed by default");
