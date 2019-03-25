@@ -1,11 +1,13 @@
 #[macro_use]
 extern crate log;
-extern crate simple_logger as logger;
+extern crate env_logger as logger;
 
 use log::Level;
+use std::env;
 
 fn main() {
-    logger::init().unwrap();
+    env::set_var("RUST_LOG", "info");
+    logger::init();
 
     debug!("this is a debug {}", "message");
     error!("this is printed by default");
